@@ -1,0 +1,697 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0",
+    "title": "SELFNET",
+    "description": "SELFNET NBI Identity service"
+  },
+  "host": "0.0.0.0:7000",
+  "basePath": "/nbi/",
+  "schemes": [
+    "http"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/auth/api/login/": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Authenticate a user",
+        "description": "Given an user object authenticates the user and provides the authentication token.",
+        "operationId": "authenticate",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "auth",
+            "description": "Auth object with credentials",
+            "schema": {
+              "$ref": "#/definitions/AUTH"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object"
+            },
+            "headers": {
+              "x-subject-token": {
+                "description": "Token to be used in every authenticated endpoint",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/identity/api/tenants/": {
+      "get": {
+        "summary": "Collect all Tenants",
+        "description": "Collect all tenants",
+        "tags": [
+          "Tenant"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "The authentication token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list with the SELFNET tenants",
+            "schema": {
+              "$ref": "#/definitions/TenantList"
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create new Tenant",
+        "description": "Create new Tenant",
+        "tags": [
+          "Tenant"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "The authentication token"
+          },
+          {
+            "in": "body",
+            "name": "Tenant object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/TenantResponse"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "The tenant object",
+            "schema": {
+              "$ref": "#/definitions/TenantResponse"
+            }
+          }
+        }
+      }
+    },
+    "/identity/api/tenants/{tenantId}": {
+      "get": {
+        "summary": "Get sepcific tenant",
+        "tags": [
+          "Tenant"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "The authentication token"
+          },
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list with the users that belong to the tenant",
+            "schema": {
+              "$ref": "#/definitions/TenantResponse"
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update the specified tenant",
+        "comsumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Tenant"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "The authentication token"
+          },
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The updated tenant",
+            "schema": {
+              "$ref": "#/definitions/TenantResponse"
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Deletes the specified tenant",
+        "description": "",
+        "tags": [
+          "Tenant"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "The authentication token"
+          },
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "NO CONTENT"
+          }
+        }
+      }
+    },
+    "/identity/api/tenants/{tenantId}/users": {
+      "get": {
+        "description": "",
+        "summary": "[USER] Get All Users",
+        "tags": [
+          "User"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The tenant ID to select users"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "The authentication token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list with the users that belong to the tenant",
+            "schema": {
+              "$ref": "#/definitions/UserList"
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "Create new user on a given tenant",
+        "summary": "[USER] Create new User",
+        "tags": [
+          "User"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The tenant ID to select users"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "The authentication token"
+          },
+          {
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UserRequest"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "A list with the users that belong to the tenant",
+            "schema": {
+              "$ref": "#/definitions/UserResponse"
+            }
+          }
+        }
+      }
+    },
+    "/identity/api/tenants/{tenantId}/users/{userId}": {
+      "get": {
+        "description": "",
+        "summary": "[USER] Get specific User",
+        "tags": [
+          "User"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The tenant ID to select users"
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The user ID to select"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "The authentication token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list with the users that belong to the tenant",
+            "schema": {
+              "$ref": "#/definitions/UserResponse"
+            }
+          }
+        }
+      },
+      "patch": {
+        "description": "Update user on a given tenant",
+        "summary": "[USER] Create new User",
+        "tags": [
+          "User"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The tenant ID to select users"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "The authentication token"
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The user ID to update"
+          },
+          {
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UserRequest"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "A list with the users that belong to the tenant",
+            "schema": {
+              "$ref": "#/definitions/UserResponse"
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete the given user",
+        "description": "Deletes the provided user id in the tenant context",
+        "tags": [
+          "User"
+        ],
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The tenant ID to select users"
+          },
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "The authentication token"
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The user ID to update"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/identity/api/roles": {
+      "get": {
+        "summary": "Collect all roles",
+        "description": "Returns all roles available in the identity service",
+        "tags": [
+          "Role"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "The authentication token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/RoleResponse"
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create new role",
+        "description": "Creates new role",
+        "tags": [
+          "Role"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "The authentication token"
+          },
+          {
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RoleRequest"
+            }
+          }
+        ]
+      }
+    },
+    "/identity/api/roles/{roleId}": {
+      "delete": {
+        "summary": "Delete role",
+        "description": "Delete role",
+        "tags": [
+          "Role"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "The authentication token"
+          },
+          {
+            "name": "roleId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/RoleResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "AUTH": {
+      "type": "object",
+      "properties": {
+        "auth": {
+          "$ref": "#/definitions/AUTH_OBJ"
+        }
+      }
+    },
+    "AUTH_OBJ": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "tenant": {
+          "type": "string"
+        }
+      }
+    },
+    "TenantList": {
+      "title": "List with tenants",
+      "type": "object",
+      "properties": {
+        "tenants": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Tenant"
+          }
+        }
+      }
+    },
+    "TenantResponse": {
+      "title": "Single tenant response",
+      "type": "object",
+      "properties": {
+        "tenant": {
+          "$ref": "#/definitions/Tenant"
+        }
+      }
+    },
+    "Tenant": {
+      "title": "Tenant object",
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "id": {
+          "type": "string"
+        },
+        "links": {
+          "$ref": "#/definitions/Links"
+        },
+        "description": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "UserList": {
+      "title": "List with users",
+      "type": "object",
+      "properties": {
+        "users": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/User"
+          }
+        }
+      }
+    },
+    "UserResponse": {
+      "title": "Single user response",
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/User"
+        }
+      }
+    },
+    "User": {
+      "title": "User object",
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string",
+          "example": "default"
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "id": {
+          "type": "string"
+        },
+        "role": {
+          "$ref": "#/definitions/Role"
+        },
+        "links": {
+          "$ref": "#/definitions/Links"
+        }
+      }
+    },
+    "UserRequest": {
+      "title": "Object to create new user",
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/CreateUser"
+        }
+      }
+    },
+    "CreateUser": {
+      "title": "Object to create user",
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "role": {
+          "$ref": "#/definitions/Role"
+        }
+      }
+    },
+    "RoleResponse": {
+      "title": "Role response object",
+      "type": "object",
+      "properties": {
+        "roles": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Role"
+          }
+        }
+      }
+    },
+    "RoleRequest": {
+      "title": "Role request object",
+      "type": "object",
+      "properties": {
+        "role": {
+          "$ref": "#/definitions/Role"
+        }
+      }
+    },
+    "Role": {
+      "title": "Role object",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "Links": {
+      "title": "Link object",
+      "type": "object",
+      "properties": {
+        "self": {
+          "type": "string"
+        },
+        "next": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

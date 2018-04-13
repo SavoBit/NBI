@@ -1,0 +1,25 @@
+# WSGI
+falcon
+jsonschema
+jsonpickle
+falcon-cors
+oslo.middleware
+
+# Deployment requirements
+Paste
+PasteDeploy
+PasteScript
+gunicorn
+
+# Authorization
+oslo.policy
+
+# Authentication
+keystonemiddleware
+python3-memcached
+
+# HTTP Requests
+requests
+
+# Logging
+pyaml

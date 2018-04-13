@@ -1,0 +1,24 @@
+{
+  "title": "Selfnet Tenant",
+  "type": "object",
+  "properties": {
+    "auth": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "tenant": {
+          "type": "string"
+        }
+      },
+      "required": ["username", "password", "tenant"]
+    }
+  },
+  "required": [
+    "auth"
+  ]
+}

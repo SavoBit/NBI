@@ -1,0 +1,290 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "NBI API for Autonomous services in SELFNET",
+    "version": "1.0",
+    "title": "NBI - Autonomous API"
+  },
+  "host": "0.0.0.0:9003",
+  "schemes": [
+    "http"
+  ],
+  "basePath": "/nbi/autonomous/api/",
+  "paths": {
+    "/symptom/{stype}/{hash}": {
+      "get": {
+        "summary": "Query app packages.",
+        "tags": [
+          "Symptom"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "API key",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "stype",
+            "in": "path",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "hash",
+            "in": "path",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "created_since",
+            "in": "query",
+            "type": "string",
+            "required": false,
+            "description": "The filter with a date e.g., 2017-01-01"
+          },
+          {
+            "name": "created_to",
+            "in": "query",
+            "type": "string",
+            "required": false,
+            "description": "The filter with a date e.g., 2017-01-01 19:00:00"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/SymptomsList"
+            }
+          }
+        }
+      }
+    },
+    "/intelligence/model": {
+      "get": {
+        "summary": "Collect all Intelligence models",
+        "tags": [
+          "Intelligence"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "API key",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/IntelligenceModels"
+            }
+          }
+        }
+      }
+    },
+    "/tal/": {
+      "get": {
+        "summary": "Collect all TAL objects",
+        "tags": [
+          "TAL"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "API key",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List with all tal and its status",
+            "schema": {
+              "$ref": "#/definitions/TALList"
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create new TAL object",
+        "tags": [
+          "TAL"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "API key",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "consumes": [
+          "application/xml"
+        ],
+        "responses": {
+          "201": {
+            "description": "Created TAL object"
+          }
+        }
+      }
+    },
+    "/tal/{tal_id}": {
+      "get": {
+        "summary": "Collect a specific TAL object",
+        "tags": [
+          "TAL"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tal_id",
+            "type": "string"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Specfic TAL object retrieved"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Removes a specific TAL object",
+        "tags": [
+          "TAL"
+        ],
+        "responses": {
+          "204": {
+            "description": "Successfully deleted TAL"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "SymptomsList": {
+      "type": "object",
+      "properties": {
+        "symptoms": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SymptomListObj"
+          }
+        }
+      }
+    },
+    "SymptomListObj": {
+      "type": "object",
+      "properties": {
+        "hash": {
+          "type": "string"
+        },
+        "created": {
+          "type": "string"
+        },
+        "updated": {
+          "type": "string"
+        },
+        "symptom_id": {
+          "type": "string"
+        },
+        "symptom": {
+          "$ref": "#/definitions/Symptom"
+        },
+        "tactic_id": {
+          "type": "string"
+        },
+        "tactic": {
+          "type": "object"
+        }
+      }
+    },
+    "Symptom": {
+      "type": "object",
+      "properties": {
+        "AlarmId": {
+          "type": "string"
+        },
+        "metric": {
+          "type": "string",
+          "description": "This change accourdingly to the metric provided"
+        }
+      }
+    },
+    "IntelligenceModels": {
+      "type": "object",
+      "properties": {
+        "intelligence_models": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Intelligence"
+          }
+        }
+      }
+    },
+    "Intelligence": {
+      "type": "object",
+      "properties": {
+        "uuid": {
+          "type": "string"
+        },
+        "meta": {
+          "type": "object"
+        },
+        "computation": {
+          "type": "object"
+        }
+      }
+    },
+    "TALList": {
+      "type": "object",
+      "properties": {
+        "tal": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TALListObj"
+          }
+        }
+      }
+    },
+    "TALListObj": {
+      "type": "object",
+      "properties": {
+        "symptom": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "enable",
+            "disabl"
+          ]
+        }
+      }
+    }
+  }
+}

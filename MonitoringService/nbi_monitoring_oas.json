@@ -1,0 +1,280 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "NBI API for Monitoring services in SELFNET",
+    "version": "1.0",
+    "title": "NBI - Monitoring API"
+  },
+  "host": "0.0.0.0:9002",
+  "schemes": [
+    "http"
+  ],
+  "basePath": "/nbi/monitoring/api/",
+  "paths": {
+    "/alarms/": {
+      "get": {
+        "summary": "Collect SELFNET alarms.",
+        "tags": [
+          "Alarm"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "API key",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/AlarmList"
+            }
+          }
+        }
+      }
+    },
+    "/alarms/{alarm_id}": {
+      "get": {
+        "summary": "Collect SELFNET alarms.",
+        "tags": [
+          "Alarm"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "API key",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "alarm_id",
+            "in": "path",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Alarm"
+            }
+          }
+        }
+      }
+    },
+    "/alarm-definitions/{definition_id}": {
+      "get": {
+        "summary": "Collect an alarm definition",
+        "tags": [
+          "Alarm"
+        ],
+        "parameters": [
+          {
+            "name": "X-Auth-Token",
+            "in": "header",
+            "description": "API key",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "definition_id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/AlarmDefinitionResponse"
+            }
+          }
+        }
+      }
+    },
+    "/metrics/{metric_name}/measurements/": {
+      "get": {
+        "summary": "Collect metric measurements",
+        "tags": [
+          "Measurements"
+        ],
+        "parameters": [
+          {
+            "name": "metric_name",
+            "in": "path",
+            "required": true,
+            "description": "The metric name to collect measurements"
+          },
+          {
+            "name": "start_time",
+            "in": "query",
+            "required": true
+          },
+          {
+            "name": "end_time",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "dimensions",
+            "in": "query",
+            "required": true,
+            "description": "Comma spearated dimensions as KEY:VALUE"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/MeasurementResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "AlarmList": {
+      "type": "object",
+      "properties": {
+        "symptoms": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Alarm"
+          }
+        }
+      }
+    },
+    "Alarm": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "state_updated_timestamp": {
+          "type": "string",
+          "description": "Date time object"
+        },
+        "created_timestamp": {
+          "type": "string",
+          "description": "Date time object"
+        },
+        "updated_timestamp": {
+          "type": "string",
+          "description": "Date time object"
+        },
+        "state": {
+          "type": "string"
+        },
+        "metrics": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Metric"
+          }
+        },
+        "alarm_definition": {
+          "$ref": "#/definitions/AlarmDefinitionSimple"
+        }
+      }
+    },
+    "Metric": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "dimensions": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "AlarmDefinitionSimple": {
+      "type": "object",
+      "properties": {
+        "severity": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "AlarmDefinitionResponse": {
+      "type": "object",
+      "properties": {
+        "definition": {
+          "$ref": "#/definitions/AlarmDefinition"
+        }
+      }
+    },
+    "AlarmDefinition": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "actions_enabled": {
+          "type": "boolean"
+        },
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "severity": {
+          "type": "string"
+        },
+        "deterministic": {
+          "type": "string"
+        },
+        "expression": {
+          "type": "string"
+        },
+        "match_by": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "MeasurementResponse": {
+      "type": "object",
+      "properties": {
+        "measurements": {
+          "$ref": "#/definitions/Measurements"
+        }
+      }
+    },
+    "Measurements": {
+      "properties": {
+        "value": {
+          "type": "number"
+        },
+        "timestamp": {
+          "type": "string"
+        },
+        "meta": {
+          "type": "object"
+        }
+      }
+    }
+  }
+}

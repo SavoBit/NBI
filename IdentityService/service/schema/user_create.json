@@ -1,0 +1,39 @@
+{
+  "title": "Selfnet User",
+  "type": "object",
+  "properties": {
+    "user": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "role": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        }
+      },
+      "required": [
+        "username",
+        "role",
+        "password"
+      ]
+    }
+  },
+  "required": [
+    "user"
+  ]
+}

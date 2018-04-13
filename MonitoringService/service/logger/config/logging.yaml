@@ -1,0 +1,74 @@
+---
+
+version: 1
+
+disable_existing_loggers: False
+
+formatters:
+
+    simple:
+
+        format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+
+
+handlers:
+
+    console:
+        class: logging.StreamHandler
+        formatter: simple
+        stream: ext://sys.stdout
+    error_file:
+        class : logging.handlers.RotatingFileHandler
+        formatter: simple
+        level: ERROR
+        filename: error.log
+        maxBytes: 5242880
+        backupCount: 3
+    all_error_file:
+        class : logging.handlers.RotatingFileHandler
+        formatter: simple
+        level: ERROR
+        filename: all_error.log
+        maxBytes: 5242880
+        backupCount: 3
+    all_info_file:
+        class : logging.handlers.RotatingFileHandler
+        formatter: simple
+        filename: all.log
+        maxBytes: 5242880
+        backupCount: 3
+    info_file:
+        class : logging.handlers.RotatingFileHandler
+        formatter: simple
+        filename: log.log
+        maxBytes: 5242880
+        backupCount: 3
+    info_access:
+        class : logging.handlers.RotatingFileHandler
+        formatter: simple
+        level: INFO
+        filename: access.log
+        maxBytes: 5242880
+        backupCount: 3
+    profiling:
+        class : logging.handlers.RotatingFileHandler
+        formatter: simple
+        level: INFO
+        filename: profiling.log
+        maxBytes: 5242880
+        backupCount: 3
+
+loggers:
+    service:
+        level: INFO
+        handlers: [info_file, error_file]
+    access:
+        level: INFO
+        handlers: [info_access]
+    Profiling:
+        level: INFO
+        handlers: [profiling]
+
+root:
+    level: INFO
+    handlers: [console, all_error_file, all_info_file]

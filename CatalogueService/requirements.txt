@@ -1,0 +1,28 @@
+# WSGI
+falcon
+falcon-multipart    # Allows the upload of form data
+falcon-cors
+
+jsonschema
+jsonpickle
+
+oslo.middleware
+
+# Deployment requirements
+Paste
+PasteDeploy
+PasteScript
+gunicorn
+
+# Authorization
+oslo.policy
+
+# Authentication
+keystonemiddleware
+python3-memcached
+
+# HTTP Requests
+requests
+
+# Logging
+pyaml

@@ -1,0 +1,26 @@
+# WSGI
+falcon
+jsonschema
+jsonpickle
+falcon-cors
+
+# API request
+requests
+
+# Logging
+pyaml
+
+# Database access
+sqlalchemy
+mysql-connector==2.1.4 # DataBase Connector
+
+# Deployment requirements
+Paste
+PasteDeploy
+PasteScript
+gunicorn
+
+# Keystone
+oslo.middleware
+keystonemiddleware==4.17.0
+python3-memcached

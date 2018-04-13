@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ns0:tal  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+          xmlns:ns0='tal.cse.com'
+          xsi:schemaLocation='tal.cse.com tal.xsd'>
+    <ns0:reaction>
+        <ns0:diagnosis>
+            <ns0:symptom OID="NBI_TEST">
+                <ns0:analysis>
+                    <ns0:aggregation>
+                        <ns0:aggregationItem OID="From The Service Catalogue">
+                            <ns0:aggregationRule OID="" description="">
+                                <ns0:metric>
+                                    <ns0:name>
+                                        <ns0:parameter>
+                                            <ns0:OID>Number</ns0:OID>
+                                            <ns0:name>avg_pkt_count</ns0:name>
+                                        </ns0:parameter>
+                                    </ns0:name>
+                                    <ns0:dimensions>
+                                        <ns0:parameter>
+                                            <ns0:OID>IP</ns0:OID>
+                                            <ns0:name>SourceIP</ns0:name>
+                                        </ns0:parameter>
+                                        <ns0:parameter>
+                                            <ns0:OID>IP</ns0:OID>
+                                            <ns0:name>DestinationIP</ns0:name>
+                                        </ns0:parameter>
+                                        <ns0:parameter>
+                                            <ns0:OID>NumberHex</ns0:OID>
+                                            <ns0:name>DestinationPort</ns0:name>
+                                            <!--ns0:value>00000050</ns0:value-->
+                                        </ns0:parameter>
+                                    </ns0:dimensions>
+                    
+                                </ns0:metric>
+                                <ns0:metric>
+                                    <ns0:name>
+                                        <ns0:parameter>
+                                            <ns0:OID>Number</ns0:OID>
+                                            <ns0:name>comunication_frequency</ns0:name>
+                                        </ns0:parameter>
+                                    </ns0:name>
+                                    <ns0:dimensions>
+                                        <ns0:parameter>
+                                            <ns0:OID>IP</ns0:OID>
+                                            <ns0:name>SourceIP</ns0:name>
+                                        </ns0:parameter>
+                                        <ns0:parameter>
+                                            <ns0:OID>IP</ns0:OID>
+                                            <ns0:name>DestinationIP</ns0:name>
+                                        </ns0:parameter>
+                                        <ns0:parameter>
+                                            <ns0:OID>NumberHex</ns0:OID>
+                                            <ns0:name>DestinationPort</ns0:name>
+                                            <!--ns0:value>00000050</ns0:value-->
+                                        </ns0:parameter>
+                                    </ns0:dimensions>
+                    
+                                </ns0:metric>
+                                <!--ns0:metadata>
+                                    <ns0:parameter>
+                                        <ns0:name>threshold_id</ns0:name>
+                                        <ns0:value>id7</ns0:value>
+
+                                    </ns0:parameter>
+                                    <ns0:parameter>
+                                        <ns0:name>avg_pkt_count_id</ns0:name>
+                                        <ns0:value>id2</ns0:value>
+
+                                    </ns0:parameter>
+                                    <ns0:parameter>
+                                        <ns0:name>communication_frequency_id</ns0:name>
+                                        <ns0:value>id3</ns0:value>
+
+                                    </ns0:parameter>
+                                </ns0:metadata-->
+                            </ns0:aggregationRule>
+                
+                        </ns0:aggregationItem>
+                        
+                    </ns0:aggregation>
+                    <ns0:threshold comparison="moreOrEqual" logical="and">
+                        <ns0:level>
+                            <ns0:parameter>
+                                <ns0:OID>Number</ns0:OID>
+                                <ns0:name>communication_frequency</ns0:name>
+                                <ns0:value>6</ns0:value>
+                            </ns0:parameter>
+                        </ns0:level>
+                        <ns0:occurrences>
+                            <ns0:temporalOccurrence>
+                                <ns0:numberOfOccurrences>1</ns0:numberOfOccurrences>
+                                <ns0:period duration="00:03:00"/>
+                            </ns0:temporalOccurrence>
+                        </ns0:occurrences>
+        
+                    </ns0:threshold>
+                    <ns0:threshold comparison="moreOrEqual" logical="and">
+                        <ns0:level>
+                            <ns0:parameter>
+                                <ns0:OID>Number</ns0:OID>
+                                <ns0:name>avg_pkt_count</ns0:name>
+                                <ns0:value>2</ns0:value>
+                            </ns0:parameter>
+                        </ns0:level>
+                        <ns0:occurrences>
+                            <ns0:temporalOccurrence>
+                                <ns0:numberOfOccurrences>1</ns0:numberOfOccurrences>
+                                <ns0:period duration="00:03:00"/>
+                            </ns0:temporalOccurrence>
+                        </ns0:occurrences>
+        
+                    </ns0:threshold>
+    
+                </ns0:analysis>
+            </ns0:symptom>
+            <ns0:causes>
+                <ns0:cause causeOID="bot.net" description="Botnet Suspected" likelihood="0.99"/>
+            </ns0:causes>
+        </ns0:diagnosis>
+        <ns0:tactic description="Activate DPI" id="DPI" priority="1">
+            <ns0:cause causeOID="bot.net" description="Botnet Suspected" />
+            <ns0:action id="dpi.operation" order="1">
+                <ns0:actionOption operation="inspectFlow" typeOfOption="add">
+                    <ns0:actuator OID="DPI">
+                        <ns0:configuration>
+                            <ns0:parameter>
+                                <ns0:OID>IP</ns0:OID>
+                                <ns0:name>srcIpAddress</ns0:name>
+                                <ns0:value>SourceIP</ns0:value>
+                            </ns0:parameter>
+                            <ns0:parameter>
+                                <ns0:OID>IP</ns0:OID>
+                                <ns0:name>dstIpAddress</ns0:name>
+                                <ns0:value>DestinationIP</ns0:value>
+                            </ns0:parameter>
+                            <ns0:parameter>
+                                <ns0:OID>Number</ns0:OID>
+                                <ns0:name>dstPort</ns0:name>
+                                <ns0:value>DestinationPort</ns0:value>
+                            </ns0:parameter>
+                            <ns0:parameter>
+                                <ns0:OID>Text</ns0:OID>
+                                <ns0:name>pattern</ns0:name>
+                                <ns0:value>"botload/tasks.php?uid="</ns0:value>
+                            </ns0:parameter>
+                            <ns0:parameter>
+                                <ns0:OID>Text</ns0:OID>
+                                <ns0:name>alert</ns0:name>
+                                <ns0:value>"A potential zombie/bot is detected"</ns0:value>
+                            </ns0:parameter>
+                        </ns0:configuration>
+                    </ns0:actuator>
+                </ns0:actionOption>
+                <ns0:metadata>
+                    <ns0:parameter>
+                        <ns0:OID>MAPPING</ns0:OID>
+                        <ns0:name>srcIpAddress</ns0:name>
+                        <ns0:value>srcIpAddress</ns0:value>
+                    </ns0:parameter>
+                    <ns0:parameter>
+                        <ns0:OID>MAPPING</ns0:OID>
+                        <ns0:name>dstPort</ns0:name>
+                        <ns0:value>dstPort</ns0:value>
+                    </ns0:parameter>
+                    <ns0:parameter>
+                        <ns0:OID>MAPPING</ns0:OID>
+                        <ns0:name>dstIpAddress</ns0:name>
+                        <ns0:value>dstIpAddress</ns0:value>
+                    </ns0:parameter>
+                    <ns0:parameter>
+                        <ns0:OID>MAPPING</ns0:OID>
+                        <ns0:name>inspectFlow</ns0:name>
+                        <ns0:value>inspectFlows</ns0:value>
+                    </ns0:parameter>
+                    <ns0:parameter>
+                        <ns0:OID>MAPPING</ns0:OID>
+                        <ns0:name>dstIpAddress</ns0:name>
+                        <ns0:value>dstIpAddress</ns0:value>
+                    </ns0:parameter>
+                    <ns0:parameter>
+                        <ns0:OID>MAPPING</ns0:OID>
+                        <ns0:name>pattern</ns0:name>
+                        <ns0:value>dstUri</ns0:value>
+                    </ns0:parameter>
+                    <ns0:location>
+                        <ns0:closeToSource>
+                            <ns0:parameter>
+                                <ns0:name>dummy</ns0:name>
+                            </ns0:parameter>
+                        </ns0:closeToSource>
+                    </ns0:location>
+                </ns0:metadata>
+                <ns0:purposeOfAction OID=""  feedbackPeriod="00:03:00">
+                    <ns0:aggregation>
+                        <ns0:aggregationItem>
+                            <ns0:aggregationRule OID="" description="">
+                                <ns0:metric>
+                                    <ns0:name>
+                                        <ns0:parameter>
+                                            <ns0:OID>IP</ns0:OID>
+                                            <ns0:name>-</ns0:name>
+                                            <ns0:value>srcIpAddress</ns0:value>
+                                        </ns0:parameter>
+                                    </ns0:name>
+                                    <ns0:dimensions>
+                                        <ns0:parameter>
+                                            <ns0:OID>IP</ns0:OID>
+                                            <ns0:name>ccServerIP</ns0:name>
+                                            <ns0:value>dstIpAddress</ns0:value>
+                                        </ns0:parameter>
+                                    </ns0:dimensions>
+                    
+                                </ns0:metric>
+                            </ns0:aggregationRule>
+
+                        </ns0:aggregationItem>
+                    </ns0:aggregation>
+                    <ns0:threshold comparison="moreOrEqual" logical="and">
+                        <ns0:level>
+                            <ns0:parameter>
+                                <ns0:OID>Number</ns0:OID>
+                                <ns0:name>communication_frequency</ns0:name>
+                                <ns0:value>6</ns0:value>
+                            </ns0:parameter>
+                        </ns0:level>
+                        <ns0:occurrences>
+                            <ns0:temporalOccurrence>
+                                <ns0:numberOfOccurrences>1</ns0:numberOfOccurrences>
+                                <ns0:period duration="00:03:00"/>
+                            </ns0:temporalOccurrence>
+                        </ns0:occurrences>
+        
+                    </ns0:threshold>
+                    <ns0:threshold comparison="moreOrEqual" logical="and">
+                        <ns0:level>
+                            <ns0:parameter>
+                                <ns0:OID>Number</ns0:OID>
+                                <ns0:name>avg_pkt_count</ns0:name>
+                                <ns0:value>2</ns0:value>
+                            </ns0:parameter>
+                        </ns0:level>
+                        <ns0:occurrences>
+                            <ns0:temporalOccurrence>
+                                <ns0:numberOfOccurrences>1</ns0:numberOfOccurrences>
+                                <ns0:period duration="00:03:00"/>
+                            </ns0:temporalOccurrence>
+                        </ns0:occurrences>
+        
+                    </ns0:threshold>
+    
+                </ns0:purposeOfAction>
+
+            </ns0:action>
+        </ns0:tactic>
+    </ns0:reaction>
+</ns0:tal>

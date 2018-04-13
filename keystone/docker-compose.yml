@@ -1,0 +1,26 @@
+version: '2'
+services:
+  mysql_db:
+    network_mode: "host"
+    image: mysql:5.7
+    volumes:
+      - "./.data/db:/var/lib/mysql"
+    ports:
+      - "3306:3306"
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+
+  keystone:
+    network_mode: "host"
+    depends_on:
+      - mysql_db
+    build: .
+    #links:
+    #  - mysql_db:mysql
+    ports:
+      - "35357:35357"
+      - "5000:5000"
+    restart: always
+    environment:
+      ADMIN_PASSWORD: admin

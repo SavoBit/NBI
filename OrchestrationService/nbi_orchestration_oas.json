@@ -1,0 +1,582 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "This is the topology API service. This describes how to use the API.",
+    "version": "1.0.0",
+    "title": "Orchestration API",
+    "contact": {
+      "email": "tteixeira@ubiwhere.com"
+    }
+  },
+  "host": "0.0.0.0:8070",
+  "basePath": "/nbi/",
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/auth/api/login/": {
+      "post": {
+        "tags": [
+          "authentication"
+        ],
+        "summary": "Authenticate a user",
+        "description": "Given an user object authenticates the user and provides the authentication token.",
+        "operationId": "authenticate",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "auth",
+            "description": "Auth object with credentials",
+            "schema": {
+              "$ref": "#/definitions/AUTH"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object"
+            },
+            "headers": {
+              "x-subject-token": {
+                "description": "Token to be used in every authenticated endpoint",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Some kind of error",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          }
+        }
+      }
+    },
+    "/orchestration/api/topology/vm/": {
+      "get": {
+        "tags": [
+          "topology"
+        ],
+        "summary": "Collect VM information",
+        "description": "Collect VM information, searching by it's infomration or network information",
+        "operationId": "getVM",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "search_by",
+            "description": "Group of parameters to perform the search. The search criteria must be passed in the form of FIELD:value,multiple parameters can be passed in the form of FIELD1:VALUE1,FIELD2:VALUE2",
+            "style": "simple"
+          },
+          {
+            "in": "query",
+            "name": "filter",
+            "description": "Group of parameters passed to the response. Filter by allows the requester to obtain a small set of parameters, e.g., using Filter=location will return only the VM's uuid and the location. Multiple parameters can be passed to the filter, e.g., Filter=location,netwokr, all must be comma separated.",
+            "style": "simple"
+          },
+          {
+            "in": "header",
+            "required": true,
+            "name": "X-Auth-Token",
+            "description": "x-subject-token provided by the authentication endpoint. Handled by keystone middleware"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/VM"
+              }
+            }
+          },
+          "default": {
+            "description": "Some kind of error",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          }
+        }
+      }
+    },
+    "/orchestration/api/topology/lte/ue/enb/": {
+      "get": {
+        "tags": [
+          "topology"
+        ],
+        "summary": "Finds all ENB",
+        "description": "Search for all the ENBs within the current topology",
+        "operationId": "getENBs",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "required": true,
+            "name": "X-Auth-Token",
+            "description": "x-subject-token provided by the authentication endpoint. Handled by keystone middleware"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ENB"
+              }
+            }
+          },
+          "default": {
+            "description": "Some kind of error",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          }
+        }
+      }
+    },
+    "/orchestration/api/topology/lte/ue/ip/{ip}": {
+      "get": {
+        "tags": [
+          "topology"
+        ],
+        "summary": "Find ue by IP",
+        "description": "Get all UE information given its IP address",
+        "operationId": "getUE",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "required": true,
+            "name": "X-Auth-Token",
+            "description": "x-subject-token provided by the authentication endpoint. Handled by keystone middleware"
+          },
+          {
+            "in": "path",
+            "required": true,
+            "name": "ip",
+            "description": "UE IP address to search for"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ENB"
+              }
+            }
+          },
+          "default": {
+            "description": "Some kind of error",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          }
+        }
+      }
+    },
+    "/orchestration/api/topology/locations/": {
+      "get": {
+        "tags": [
+          "topology"
+        ],
+        "summary": "Finds all locations",
+        "description": "Search for all the locations within the current topology",
+        "operationId": "getLocations",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "required": true,
+            "name": "X-Auth-Token",
+            "description": "x-subject-token provided by the authentication endpoint. Handled by keystone middleware"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Location"
+              }
+            }
+          },
+          "default": {
+            "description": "Some kind of error",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          }
+        }
+      }
+    },
+    "/orchestration/api/services": {
+      "get": {
+        "tags": [
+          "inventory"
+        ],
+        "summary": "List all services in the service inventory",
+        "description": "Get the list of services with minimal information about each e2es",
+        "operationId": "listServices",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "required": true,
+            "name": "X-Auth-Token",
+            "description": "x-subject-token provided by the authentication endpoint. Handled by keystone middleware"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/SERVICE_LIST"
+              }
+            }
+          },
+          "default": {
+            "description": "Some kind of error",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          }
+        }
+      }
+    },
+    "/orchestration/api/services/{serviceId}": {
+      "get": {
+        "tags": [
+          "inventory"
+        ],
+        "summary": "Get a specific e2es",
+        "description": "Collect from the service inventory the provided service id",
+        "operationId": "getService",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "required": true,
+            "name": "serviceId",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The service ID"
+          },
+          {
+            "in": "header",
+            "required": true,
+            "name": "X-Auth-Token",
+            "description": "x-subject-token provided by the authentication endpoint. Handled by keystone middleware"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/SERVICE"
+            }
+          },
+          "404": {
+            "description": "service not found"
+          },
+          "default": {
+            "description": "Some kind of error",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "AUTH": {
+      "type": "object",
+      "properties": {
+        "auth": {
+          "$ref": "#/definitions/AUTH_OBJ"
+        }
+      }
+    },
+    "AUTH_OBJ": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "tenant": {
+          "type": "string"
+        }
+      }
+    },
+    "Location": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "ENB": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "VM": {
+      "type": "object",
+      "properties": {
+        "uuid": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "resource_id": {
+          "type": "string"
+        },
+        "instance_id": {
+          "type": "string"
+        },
+        "host_ip": {
+          "type": "string"
+        },
+        "hostname": {
+          "type": "string"
+        },
+        "location": {
+          "type": "string"
+        },
+        "tenant_id": {
+          "type": "string"
+        },
+        "user_id": {
+          "type": "string"
+        },
+        "reported_time": {
+          "type": "string"
+        },
+        "network": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/NETWORK"
+          }
+        }
+      }
+    },
+    "NETWORK": {
+      "type": "object",
+      "properties": {
+        "ip": {
+          "type": "string"
+        },
+        "dhcp": {
+          "type": "string"
+        },
+        "network_reported_time": {
+          "type": "number"
+        },
+        "segmentation_id": {
+          "type": "string"
+        },
+        "mac": {
+          "type": "string"
+        },
+        "network_resource_id": {
+          "type": "string"
+        },
+        "dns": {
+          "type": "string"
+        },
+        "network_id": {
+          "type": "string"
+        },
+        "port_id": {
+          "type": "string"
+        },
+        "iface": {
+          "type": "string"
+        },
+        "ovs_id": {
+          "type": "string"
+        },
+        "gateway": {
+          "type": "string"
+        }
+      }
+    },
+    "SERVICE_LIST": {
+      "type": "object",
+      "properties": {
+        "created": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        }
+      }
+    },
+    "SERVICE": {
+      "type": "object",
+      "properties": {
+        "created": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "info": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "lifecycle": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LIFECYCLE"
+          }
+        },
+        "related_services": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "sdn_apps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/APP"
+          }
+        },
+        "network_services": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/NETWORK_SERVICE"
+          }
+        }
+      }
+    },
+    "LIFECYCLE": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string"
+        },
+        "timestamp": {
+          "type": "string"
+        }
+      }
+    },
+    "NETWORK_SERVICE": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "nfvo": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "sdn_apps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/APP"
+          }
+        },
+        "apps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/APP"
+          }
+        }
+      }
+    },
+    "APP": {
+      "type": "object",
+      "properties": {
+        "app_class": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "location": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "virtual_machines": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/VM"
+          }
+        }
+      }
+    },
+    "ApiResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
